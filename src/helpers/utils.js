@@ -62,3 +62,16 @@ exports.responseMsg = (errMsg, successStatus, data, paginated) => {
 
   return responseObj;
 };
+
+exports.validateProvidedData = (schema, data , options) => {
+  const validationRes = schema.validate(data, options);
+    if (validationRes.error) {
+      const { error: { details: errors } } = validationRes;
+      const validationErrObj = {};
+      for (let err of errors) {
+        validationErrObj[`${err.context.label} error`] = err.message;
+      };
+      return validationErrObj;
+    };
+    return false;
+}

@@ -6,8 +6,7 @@ if (database.toLowerCase() === 'mongodb') {
 
   //Bring in the mongoose module
   const mongoose = require('mongoose');
-  const { url, name } = dbCredentials.noSqlDbConfig;
-  const dbURI = url + name;
+  const dbURI = process.env.DB_URI
 
   //console to check what is the dbURI refers to
   console.log('Database URL is => ', dbURI);
@@ -45,48 +44,6 @@ if (database.toLowerCase() === 'mongodb') {
 
   //Exported the database connection to be imported at the server
   exports.default = db;
-} else if (database.toLowerCase() === 'sql') {
-  //Bring in the sequelize module
-  const Sequelize = require('sequelize');
-  const {
-    name,
-    username,
-    password,
-    host,
-    port,
-    dialect,
-  } = dbCredentials.sqlDbConfig;
-
-  //logging: false because sequelize by default log all DB activities in console which will unneccessarily flood the console.
-  const sequelize = new Sequelize(name, username, password, {
-    host,
-    port,
-    dialect,
-    logging: false,
-    pool: {
-      max: 5,
-      min: 0,
-      acquire: 30000,
-      idle: 10000,
-    },
-  });
-
-  sequelize
-    .authenticate()
-    .then(() =>
-      console.log(
-        `Sequelize connection started on database "${name}" from "${dialect}"`
-      )
-    )
-    .catch((err) => console.error(`Sequelize connection error: ${err}`));
-
-  process.on('SIGINT', function () {
-    console.log('Sequelize disconnected through app termination');
-    process.exit(0);
-  });
-
-  //Exported the database connection to be imported at the server
-  exports.default = sequelize;
 } else {
   console.log(
     '\x1b[33m%s\x1b[0m',
