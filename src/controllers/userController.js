@@ -1,6 +1,7 @@
 const errorMsg = require('../helpers/errorMessage').errorMessages;
 const utils = require('../helpers/utils');
 const Joi = require('joi');
+const bcrypt = require('bcryptjs');
 
 const User = require('../models/user');
 
@@ -40,7 +41,10 @@ const updateProfileSchema = Joi.object({
     try {
         const validationResult = utils.validateProvidedData(updateProfileSchema, req.body, options);
         if (validationResult) {
-        return res.status(400).send(utils.responseMsg(validationResult));
+            return res.status(400).send(utils.responseMsg(validationResult));
+        }
+        if (req.body.password) {
+            req.body.password = await bcrypt.hash(req.body.password, 12);
         }
         const updatedUser = await User.findOneAndUpdate({ _id: req.user[0].id}, req.body, {
             new: true,

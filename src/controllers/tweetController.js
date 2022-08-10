@@ -149,7 +149,7 @@ exports.likeTweetToggle = async (req, res) => {
             tweet[0].likes.splice(userLikeIndex, 1);
          }
          tweet[0].likeCount--;
-         tweet[0].save(err => {
+         tweet[0].save({ timestamps: false }, err => {
             if (err) return res.status(500).send(utils.responseMsg(errorMsg.dbError));
          });
          return res.status(200).send(utils.responseMsg(null, true, "Tweet unlike."));
@@ -157,7 +157,7 @@ exports.likeTweetToggle = async (req, res) => {
       //  Like the tweet.
       tweet[0].likes.push(req.user[0].id);
       tweet[0].likeCount++;
-      tweet[0].save(err => {
+      tweet[0].save({ timestamps: false }, err => {
          if (err) return res.status(500).send(utils.responseMsg(errorMsg.dbError));
       });
       return res.status(200).send(utils.responseMsg(null, true, "Tweet liked successfully."))      
@@ -169,3 +169,4 @@ exports.likeTweetToggle = async (req, res) => {
 atul = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyZjMzMzZjNGNmYTY1M2M1NmEzN2U1YSIsInVzZXJuYW1lIjoia2F0dWxheGlvbmVkIiwicGFzc3dvcmQiOiJ0ZXN0IiwiaWF0IjoxNjYwMTA1NjY0LCJleHAiOjE2NjAxOTIwNjR9.pCmosmdfI0tCb2nMg0bh-yfhGoMcos4wKH32LcvK2Q0'
 sachin = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyZjMzMzRiNGNmYTY1M2M1NmEzN2U1NyIsInVzZXJuYW1lIjoic2FjaGluIiwicGFzc3dvcmQiOiJ0ZXN0IiwiaWF0IjoxNjYwMTA1NjIyLCJleHAiOjE2NjAxOTIwMjJ9.c-NqLPGf911LC4GZOcwL3jx8wtuIOHsJTgzE5TeYOt0'
 akshay = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyZjMzMzA5NGNmYTY1M2M1NmEzN2U1NCIsInVzZXJuYW1lIjoiYWtzaGF5IiwicGFzc3dvcmQiOiJ0ZXN0IiwiaWF0IjoxNjYwMTA1NTg3LCJleHAiOjE2NjAxOTE5ODd9.UCkjvxasJg_w8rxkTl2DsKtgAzMDTs9YjsbI91RaXbI'
+testing = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyZjM0ODg2YjQwNTA3ZjdlMDE1NzE2ZCIsInVzZXJuYW1lIjoidGVzdGluZyIsImlhdCI6MTY2MDExMTIwNiwiZXhwIjoxNjYwMTk3NjA2fQ.vJ2kaEQU9eSivxZmydpcz8ZjpAjh85nE2zRdDLA6Nls'
