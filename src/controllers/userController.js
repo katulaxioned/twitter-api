@@ -7,7 +7,7 @@ const User = require('../models/user');
 const options = { abortEarly : false };
 
 /**
- * @description Returns logged user profile details.
+ * @description Returns logged in user profile details.
  * @function getProfile
  */
 exports.getProfile = async (req, res) => {
@@ -33,7 +33,7 @@ const updateProfileSchema = Joi.object({
   });
 
 /**
- * @description Returns updated user in response.
+ * @description Updated the user and returns the response.
  * @function updateProfile
  */
  exports.updateProfile = async (req, res) => {
@@ -51,7 +51,7 @@ const updateProfileSchema = Joi.object({
               .status(500)
               .send(utils.responseMsg(errorMsg.dbError));
           }
-        return res.status(200).send(utils.responseMsg(null, true, "User updated successfully."));
+        return res.status(200).send(utils.responseMsg(null, true, updatedUser));
     } catch (err) {
         console.error('error', err.stack);
         return res.status(500).send(utils.responseMsg(err));
@@ -59,7 +59,7 @@ const updateProfileSchema = Joi.object({
 }
 
 /**
- * @description Return the deleted user.
+ * @description Delete the user and returns the success message.
  * @function deleteProfile
  */
  exports.deleteProfile = async (req, res) => {
