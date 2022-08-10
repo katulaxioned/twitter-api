@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const appRoutes = require('./appRoutes');
+const userRoutes = require('./userRoutes');
 const authRoutes = require('./authRoutes');
 const passport = require('passport');
 const dependencies = require('./routesDependencies').default;
@@ -24,7 +25,8 @@ const dependencies = require('./routesDependencies').default;
  */
 router.get('/health', dependencies.serverHealth.checkHealth);
 
-router.use('/app', passport.authenticate('jwt', { session : false }), appRoutes);
+// router.use('/app', passport.authenticate('jwt', { session : false }), appRoutes);
+router.use('/user', passport.authenticate('jwt', { session : false }), userRoutes);
 router.use('/auth', authRoutes);
 
 module.exports = router;
