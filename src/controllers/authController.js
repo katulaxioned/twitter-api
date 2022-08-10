@@ -2,6 +2,7 @@ const authService = require('../services/authServices');
 const errorMsg = require('../helpers/errorMessage').errorMessages;
 const utils = require('../helpers/utils');
 const Joi = require('joi');
+const bcrypt = require('bcryptjs');
 
 const User = require('../models/user');
 
@@ -31,13 +32,14 @@ exports.login = async (req, res) => {
       return res.status(422).send(utils.responseMsg(errorMsg.noUserExist));
     }
 
-    if (validUser.password === password) {
+    const isPasswordMatch = await bcrypt.compare(password, validUser.password);
+
+    if (isPasswordMatch) {
       let message = {
         msg: 'Login Successful.',
         token: authService.createToken({
           id: validUser._id,
           username,
-          password,
         }),
       };
       return res.status(200).send(utils.responseMsg(null, true, message));
@@ -84,10 +86,11 @@ exports.signup = async (req, res) => {
         .status(409)
         .send(utils.responseMsg(errorMsg.duplicateUserProvided));
     }
+    const encryptPassword = await bcrypt.hash(password, 12);
     const newUser = new User({
       username: username,
       email: email,
-      password: password,
+      password: encryptPassword,
       info: info,
     });
     await newUser.save((err) => {

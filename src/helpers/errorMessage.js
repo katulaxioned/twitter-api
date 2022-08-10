@@ -1,3 +1,5 @@
+const { update } = require("lodash");
+
 exports.errorMessages = {
   routeNotFound: {
     code: 'Resource Not Found',
@@ -42,5 +44,25 @@ exports.errorMessages = {
   unauthorized: {
     code: 'Bad Request',
     message: 'You are Unauthorized'
+  },
+  tweetNotFound: {
+    code: 'Bad Request',
+    message: 'Tweet Not Found.',
+  },
+  idNotValid: {
+    code: 'Bad Request',
+    message: 'Provided invalid id',
+  },
+  noTweetUpdate: {
+    code: 'Bad Request',
+    message: 'Can\'t update. Only creator can update the tweets.'
+  },
+  noTweetDelete: {
+    code: 'Bad Request',
+    message: 'Can\'t delete. Only creator can delete the tweets.'
+  },
+  invalidQueryParams: {
+    code: 'Bad Request',
+    message: 'Provided invalid query parameters.'
   }
 };
