@@ -4,6 +4,7 @@ const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 
 const User = require('../models/user');
+const Tweet = require('../models/tweet');
 
 const options = { abortEarly : false };
 
@@ -37,7 +38,7 @@ const updateProfileSchema = Joi.object({
  * @description Updated the user and returns the response.
  * @function updateProfile
  */
- exports.updateProfile = async (req, res) => {
+exports.updateProfile = async (req, res) => {
     try {
         const validationResult = utils.validateProvidedData(updateProfileSchema, req.body, options);
         if (validationResult) {
@@ -66,12 +67,30 @@ const updateProfileSchema = Joi.object({
  * @description Delete the user and returns the success message.
  * @function deleteProfile
  */
- exports.deleteProfile = async (req, res) => {
+exports.deleteProfile = async (req, res) => {
     try {
-        const result = await User.deleteOne({ _id: req.user[0].id });
-        if (result.deletedCount) {
-            return res.status(200).send(utils.responseMsg(null, true, "Profile deleted successfully"));
+        // Delete all self created tweets.
+        const isDeleteTweet = await Tweet.deleteMany({ createdBy: req.user[0].id });
+        // Delete likes on every other tweets.
+        const allLikedTweets = await Tweet.find({ likes: req.user[0].id });
+        allLikedTweets.forEach(tweet => {
+            const userLikeIndex = tweet.likes.indexOf(req.user[0].id);
+            tweet.likes.splice(userLikeIndex, 1);
+            tweet.likeCount--;
+            tweet.save({ timestamps: false }, err => {
+                if (err) return res.status(500).send(utils.responseMsg(errorMsg.dbError));
+            });
+        })
+        // Finally delete user profile.
+        const isUserDelete = await User.deleteOne({ _id: req.user[0].id });
+        const response = {
+            selfCreatedTweets: isDeleteTweet ? "Successfully deleted self created tweets.": "Failed to deleted self created tweets.",
+            allLikedTweets: "Successfully deleted user like history",
+            selfProfile: isUserDelete ? "Successfully deleted user account.": "Failed to deleted user account.",
         }
+        if (isUserDelete.deletedCount) {
+            return res.status(200).send(utils.responseMsg(null, true, response));
+        };
         return res
         .status(500)
         .send(utils.responseMsg(errorMsg.dbError));
@@ -79,4 +98,4 @@ const updateProfileSchema = Joi.object({
         console.error('error', err.stack);
         return res.status(500).send(utils.responseMsg(err));
     }
- }
+}
