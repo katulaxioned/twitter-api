@@ -16,7 +16,7 @@ opts.secretOrKey = secret;
 passport.use(
   new JwtStrategy(opts, async (token, done) => {
     try {
-      const isUserExists = await User.find({ username: token.username });
+      const isUserExists = await User.find({ _id: token.id });
       if (!isUserExists.length) {
         return done(null, false);
       }

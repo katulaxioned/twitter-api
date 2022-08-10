@@ -35,6 +35,7 @@ exports.login = async (req, res) => {
       let message = {
         msg: 'Login Successful.',
         token: authService.createToken({
+          id: validUser._id,
           username,
           password,
         }),
@@ -95,7 +96,7 @@ exports.signup = async (req, res) => {
           .status(500)
           .send(utils.responseMsg(errorMsg.dbError));
     });
-    return res.status(200).send(utils.responseMsg(null, true, newUser));
+    return res.status(200).send(utils.responseMsg(null, true, "User created. You can log in."));
   } catch (error) {
     console.error('error', error.stack);
     return res
